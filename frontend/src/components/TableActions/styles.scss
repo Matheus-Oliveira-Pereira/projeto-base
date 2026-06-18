@@ -1,0 +1,16 @@
+@use '../../styles/variables' as *;
+
+.btn-excluir {
+  color: #dc2626 !important;
+  &:hover { background: #fef2f2 !important; }
+}
+
+.btn-historico {
+  color: $secondary-color !important;
+  &:hover { background: #f3f4f6 !important; }
+}
+
+.btn-editar {
+  color: $primary-color !important;
+  &:hover { background: #eff6ff !important; }
+}

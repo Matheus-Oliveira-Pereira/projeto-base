@@ -1,0 +1,24 @@
+package br.com.matheus.base.visoes.telas.perfil;
+
+import br.com.matheus.base.enums.StatusPerfil;
+import lombok.Data;
+
+import java.util.UUID;
+
+@Data
+public class PerfilDTO {
+
+    private UUID id;
+    private String descricao;
+    private StatusPerfil status;
+    private Integer totalA = 0;
+    private Integer totalB = 0;
+    private Integer totalC = 0;
+    private Integer totalD = 0;
+
+    public PerfilDTO(UUID id, String descricao, StatusPerfil status) {
+        this.id = id;
+        this.descricao = descricao;
+        this.status = status;
+    }
+}
