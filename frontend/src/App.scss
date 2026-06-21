@@ -25,6 +25,30 @@ body {
   height: 100%;
 }
 
+// ─── Focus (consistent, only keyboard) ───
+button,
+a,
+input,
+select,
+textarea {
+  &:focus { outline: none; }
+}
+
+button:focus-visible,
+a:focus-visible,
+.p-button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.35) !important;
+  border-radius: 8px;
+}
+
+// Tame PrimeReact's default heavy focus ring (mouse click)
+.p-button:focus {
+  box-shadow: none;
+}
+.p-button.btn-salvar:focus { box-shadow: 0 2px 8px rgba(59, 130, 246, 0.25); }
+.p-button.btn-novo:focus { box-shadow: 0 2px 8px rgba(34, 197, 94, 0.25); }
+
 // ─── Layout ───
 .layout-wrapper {
   display: flex;
@@ -58,6 +82,13 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   padding: 1.5rem;
   overflow: hidden;
+}
+
+// When content-card is a PrimeReact Card, avoid double padding/shadow
+.p-card.content-card {
+  padding: 0;
+  .p-card-body { padding: 1.5rem; }
+  .p-card-content { padding: 0; }
 }
 
 // ─── PrimeReact DataTable overrides ───
@@ -289,48 +320,42 @@ body {
   padding: 0.6rem 0.85rem;
   font-size: 0.875rem;
   color: $text-color;
-  transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
-  background: $gray-50;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  background: white;
 
-  &:enabled:hover { border-color: #94a3b8; background: white; }
+  &:enabled:hover { border-color: #94a3b8; }
   &:enabled:focus {
     border-color: $primary-color;
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
-    background: white;
     outline: none;
   }
   &::placeholder { color: $gray-400; font-weight: 400; }
 }
 
-.p-dropdown {
-  border: 1.5px solid $gray-300 !important;
-  border-radius: 8px !important;
-  background: $gray-50;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  .p-dropdown-label { padding: 0.6rem 0.85rem; font-size: 0.875rem; color: $text-color; }
-  &:not(.p-disabled):hover { border-color: #94a3b8 !important; background: white; }
-  &:not(.p-disabled).p-focus { border-color: $primary-color !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12); background: white; }
-  .p-dropdown-trigger { width: 2.5rem; color: $gray-400; }
-}
-
+.p-dropdown,
 .p-multiselect {
   border: 1.5px solid $gray-300 !important;
   border-radius: 8px !important;
-  background: $gray-50;
+  background: white;
   transition: border-color 0.2s, box-shadow 0.2s;
-  .p-multiselect-label { padding: 0.6rem 0.85rem; font-size: 0.875rem; }
-  &:not(.p-disabled):hover { border-color: #94a3b8 !important; background: white; }
-  &:not(.p-disabled).p-focus { border-color: $primary-color !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12); background: white; }
+  box-shadow: none !important;
+  &:not(.p-disabled):hover { border-color: #94a3b8 !important; }
+  &:not(.p-disabled).p-focus { border-color: $primary-color !important; box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12) !important; }
+  .p-dropdown-trigger,
   .p-multiselect-trigger { width: 2.5rem; color: $gray-400; }
-  .p-multiselect-token {
-    background: #eff6ff;
-    color: $primary-color;
-    border-radius: 6px;
-    padding: 0.2rem 0.5rem;
-    font-size: 0.8rem;
-    font-weight: 500;
-    border: 1px solid #bfdbfe;
-  }
+}
+
+.p-dropdown .p-dropdown-label { padding: 0.6rem 0.85rem; font-size: 0.875rem; color: $text-color; }
+.p-multiselect .p-multiselect-label { padding: 0.6rem 0.85rem; font-size: 0.875rem; }
+
+.p-multiselect .p-multiselect-token {
+  background: #eff6ff;
+  color: $primary-color;
+  border-radius: 6px;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid #bfdbfe;
 }
 
 .p-password {
@@ -586,39 +611,30 @@ body {
 
   // Inputs
   .p-inputtext {
-    background: #1e293b !important;
+    background: #0f172a !important;
     border-color: #334155 !important;
     color: #e2e8f0 !important;
 
     &::placeholder { color: #64748b; }
-    &:enabled:hover {
-      border-color: #475569 !important;
-      background: #253348 !important;
-    }
-    &:enabled:focus {
-      background: #253348 !important;
-    }
+    &:enabled:hover { border-color: #475569 !important; }
+    &:enabled:focus { border-color: $primary-color !important; }
   }
 
-  .p-dropdown {
-    background: #1e293b !important;
-    border-color: #334155 !important;
-    .p-dropdown-label { color: #e2e8f0; }
-    &:not(.p-disabled):hover { border-color: #475569 !important; background: #253348 !important; }
-    .p-dropdown-trigger { color: #64748b; }
-  }
-
+  .p-dropdown,
   .p-multiselect {
-    background: #1e293b !important;
+    background: #0f172a !important;
     border-color: #334155 !important;
+    .p-dropdown-label,
     .p-multiselect-label { color: #e2e8f0; }
-    &:not(.p-disabled):hover { border-color: #475569 !important; background: #253348 !important; }
+    &:not(.p-disabled):hover { border-color: #475569 !important; }
+    .p-dropdown-trigger,
     .p-multiselect-trigger { color: #64748b; }
-    .p-multiselect-token {
-      background: #253348;
-      color: #93c5fd;
-      border-color: #334155;
-    }
+  }
+
+  .p-multiselect .p-multiselect-token {
+    background: #253348;
+    color: #93c5fd;
+    border-color: #334155;
   }
 
   // Dropdown/MultiSelect panels
@@ -730,8 +746,14 @@ body {
   // Quick links
   .quick-link {
     background: #172032;
+    border-color: #334155;
     color: #94a3b8;
-    &:hover { background: #253348; }
+    &:hover {
+      background: #253348;
+      border-color: rgba(96, 165, 250, 0.4);
+      color: #60a5fa;
+    }
+    i { color: #60a5fa; }
   }
 
   // System info
