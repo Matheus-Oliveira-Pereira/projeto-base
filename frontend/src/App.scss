@@ -1,9 +1,5 @@
 @use './styles/variables' as *;
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 @import 'primereact/resources/themes/lara-light-blue/theme.css';
 @import 'primereact/resources/primereact.min.css';
 @import 'primeicons/primeicons.css';
@@ -772,3 +768,7 @@ body {
     border: 1px solid #334155;
   }
 }
+
+// Utility classes
+.w-full { width: 100%; }
+.text-muted { color: $gray-400; }

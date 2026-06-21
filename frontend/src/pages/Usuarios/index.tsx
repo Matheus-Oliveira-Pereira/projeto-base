@@ -136,9 +136,9 @@ function Usuarios() {
   const salvar = () => { setSubmitted(true); if (!validar()) return; salvarMutation.mutate(); };
 
   const perfisTemplate = (rowData: UsuarioDTO) => {
-    if (!rowData.perfis) return <span className="text-gray-400">&mdash;</span>;
+    if (!rowData.perfis) return <span className="text-muted">&mdash;</span>;
     const lista = rowData.perfis.split(', ').filter(Boolean);
-    if (!lista.length) return <span className="text-gray-400">&mdash;</span>;
+    if (!lista.length) return <span className="text-muted">&mdash;</span>;
     return (<div className="perfis-chips">{lista.map((nome) => (<span key={nome} className="perfil-chip"><i className="pi pi-shield" />{nome}</span>))}</div>);
   };
 

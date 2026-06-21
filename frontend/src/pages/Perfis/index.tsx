@@ -115,7 +115,7 @@ function Perfis() {
   const salvar = () => { setSubmitted(true); if (!validar()) return; salvarMutation.mutate(); };
 
   const rolesTemplate = (rowData: PerfilDTO) => {
-    if (!rowData.roles?.length) return <span className="text-gray-400">&mdash;</span>;
+    if (!rowData.roles?.length) return <span className="text-muted">&mdash;</span>;
     return (<div className="roles-chips">{rowData.roles.map((role) => (<span key={role} className="role-chip">{role}</span>))}</div>);
   };
 
