@@ -2,6 +2,7 @@ package br.com.matheus.base.controladores;
 
 import br.com.matheus.base.entidades.Perfil;
 import br.com.matheus.base.servicos.PerfilService;
+import br.com.matheus.base.visoes.dtos.PaginatedResponse;
 import br.com.matheus.base.visoes.telas.perfil.PerfilDTO;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,12 @@ import java.util.List;
 public class PerfilController extends EntidadeController<Perfil, PerfilService> {
 
     @GetMapping("/listar")
-    public ResponseEntity<List<PerfilDTO>> listarDTO(HttpServletRequest request) {
+    public ResponseEntity<PaginatedResponse<PerfilDTO>> listarDTO(HttpServletRequest request) {
         return ResponseEntity.ok(service.listarDTO(request.getParameterMap()));
+    }
+
+    @GetMapping("/ativos")
+    public ResponseEntity<List<Perfil>> listarAtivos() {
+        return ResponseEntity.ok(service.listarAtivos());
     }
 }

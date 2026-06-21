@@ -430,6 +430,26 @@ body {
   }
 }
 
+// ─── Tooltip ───
+.p-tooltip {
+  .p-tooltip-text {
+    padding: 0.4rem 0.65rem;
+    font-size: 0.72rem;
+    border-radius: 6px;
+    background: #1e293b;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  .p-tooltip-arrow {
+    border-top-color: #1e293b;
+  }
+
+  &.p-tooltip-top .p-tooltip-arrow { border-top-color: #1e293b; }
+  &.p-tooltip-bottom .p-tooltip-arrow { border-bottom-color: #1e293b; }
+  &.p-tooltip-left .p-tooltip-arrow { border-left-color: #1e293b; }
+  &.p-tooltip-right .p-tooltip-arrow { border-right-color: #1e293b; }
+}
+
 // ─── Form fields ───
 .form-field {
   margin-bottom: 1.35rem;
@@ -660,6 +680,28 @@ body {
     border-color: #475569 !important;
     &:hover {
       background: #253348 !important;
+    }
+  }
+
+  .btn-toggle-inativos {
+    background: #1e293b !important;
+    color: #64748b !important;
+    border-color: #475569 !important;
+
+    &:hover {
+      background: #253348 !important;
+      color: #94a3b8 !important;
+      border-color: #64748b !important;
+    }
+
+    &.active {
+      color: #f59e0b !important;
+      border-color: #f59e0b !important;
+      background: rgba(245, 158, 11, 0.1) !important;
+
+      &:hover {
+        background: rgba(245, 158, 11, 0.2) !important;
+      }
     }
   }
 

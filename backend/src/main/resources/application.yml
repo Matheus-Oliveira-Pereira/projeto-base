@@ -12,12 +12,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
-      org:
-        hibernate:
-          envers:
-            audit_table_suffix: _AUD
-            revision_field_name: REV
-            revision_type_field_name: REVTYPE
+      org.hibernate.envers:
+        audit_table_suffix: _AUD
+        revision_field_name: REV
+        revision_type_field_name: REVTYPE
   jackson:
     serialization:
       write-dates-as-timestamps: false

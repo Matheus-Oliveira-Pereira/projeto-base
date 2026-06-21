@@ -29,7 +29,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Perfil extends Entidade {
+public class Perfil extends Entidade implements br.com.matheus.base.interfaces.Desativavel {
 
     @NotBlank(message = "Descrição é obrigatória")
     @Column(unique = true)
@@ -38,9 +38,20 @@ public class Perfil extends Entidade {
     @Enumerated(EnumType.STRING)
     private StatusPerfil status;
 
+    @Override
+    public void desativar() {
+        this.status = StatusPerfil.INATIVO;
+    }
+
+    @Override
+    public void restaurar() {
+        this.status = StatusPerfil.ATIVO;
+    }
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "PERFIL_ROLES", joinColumns = @JoinColumn(name = "perfil_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
+    @org.hibernate.envers.NotAudited
     private Set<Role> roles = new HashSet<>();
 }

@@ -1,8 +1,8 @@
 import { useLocation } from 'react-router-dom';
-import { Button } from 'primereact/button';
 import { useAuth } from '../../contexts/AuthContext';
 import { useTheme } from '../../contexts/ThemeContext';
 import { menuItems } from '../Sidebar';
+import NotificationBell from '../NotificationBell';
 import './styles.scss';
 
 interface TopbarProps {
@@ -31,8 +31,10 @@ function Topbar({ onEditProfile, onLogout }: TopbarProps) {
       </div>
 
       <div className="topbar-right">
-        <Button icon={isDark ? 'pi pi-sun' : 'pi pi-moon'} rounded text severity="secondary" onClick={toggleTheme} aria-label="Alternar tema" />
-        <Button icon="pi pi-bell" rounded text severity="secondary" aria-label="Notificações" />
+        <button type="button" className="topbar-icon-btn" onClick={toggleTheme} aria-label="Alternar tema">
+          <i className={isDark ? 'pi pi-sun' : 'pi pi-moon'} />
+        </button>
+        <NotificationBell />
 
         <button type="button" className="topbar-user" onClick={onEditProfile} title="Editar meu perfil">
           <div className="user-avatar">{getInitials(user?.nome)}</div>

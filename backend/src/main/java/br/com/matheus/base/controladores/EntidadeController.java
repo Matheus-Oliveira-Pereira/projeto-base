@@ -3,11 +3,13 @@ package br.com.matheus.base.controladores;
 import br.com.matheus.base.entidades.superclasses.Entidade;
 import br.com.matheus.base.servicos.AuditoriaService;
 import br.com.matheus.base.servicos.EntidadeService;
+import br.com.matheus.base.servicos.NotificacaoService;
 import br.com.matheus.base.visoes.dtos.AuditoriaDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,6 +27,9 @@ public abstract class EntidadeController<T extends Entidade, S extends EntidadeS
     @Autowired
     private AuditoriaService auditoriaService;
 
+    @Autowired
+    private NotificacaoService notificacaoService;
+
     @GetMapping("/{id}")
     public ResponseEntity<T> buscar(@PathVariable UUID id) {
         return ResponseEntity.ok(service.buscar(id));
@@ -37,18 +42,38 @@ public abstract class EntidadeController<T extends Entidade, S extends EntidadeS
 
     @PostMapping
     public ResponseEntity<T> salvar(@Valid @RequestBody T entity) {
-        return ResponseEntity.ok(service.salvar(entity));
+        T saved = service.salvar(entity);
+        notificacaoService.criacao(entity.getClass().getSimpleName(), saved.getId().toString());
+        return ResponseEntity.ok(saved);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<T> atualizar(@PathVariable UUID id, @Valid @RequestBody T entity) {
         T existing = service.buscar(id);
         service.copyProperties(entity, existing);
-        return ResponseEntity.ok(service.salvar(existing));
+        T updated = service.salvar(existing);
+        notificacaoService.alteracao(existing.getClass().getSimpleName(), id.toString());
+        return ResponseEntity.ok(updated);
+    }
+
+    @PatchMapping("/{id}/desativar")
+    public ResponseEntity<Void> desativar(@PathVariable UUID id) {
+        service.desativar(id);
+        notificacaoService.alteracao(service.buscar(id).getClass().getSimpleName(), id.toString());
+        return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{id}/restaurar")
+    public ResponseEntity<Void> restaurar(@PathVariable UUID id) {
+        service.restaurar(id);
+        notificacaoService.alteracao(service.buscar(id).getClass().getSimpleName(), id.toString());
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> excluir(@PathVariable UUID id) {
+        T entity = service.buscar(id);
+        notificacaoService.exclusao(entity.getClass().getSimpleName(), id.toString());
         service.excluir(id);
         return ResponseEntity.noContent().build();
     }

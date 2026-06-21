@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Dialog } from 'primereact/dialog';
 import { Timeline } from 'primereact/timeline';
-import { Tag } from 'primereact/tag';
 import BaseService from '../../services/baseService';
 import './styles.scss';
 
@@ -21,10 +20,22 @@ interface HistoryDialogProps {
   title?: string;
 }
 
-const OPERATION_CONFIG: Record<string, { severity: 'success' | 'info' | 'danger'; icon: string }> = {
-  'CRIAÇÃO': { severity: 'success', icon: 'pi pi-plus' },
-  'ALTERAÇÃO': { severity: 'info', icon: 'pi pi-pencil' },
-  'EXCLUSÃO': { severity: 'danger', icon: 'pi pi-trash' },
+const OPERATION_CONFIG: Record<string, { color: string; bg: string; border: string; icon: string; label: string }> = {
+  'CRIAÇÃO': { color: '#166534', bg: '#dcfce7', border: '#bbf7d0', icon: 'pi pi-plus-circle', label: 'Criação' },
+  'ALTERAÇÃO': { color: '#1e40af', bg: '#dbeafe', border: '#93c5fd', icon: 'pi pi-sync', label: 'Alteração' },
+  'EXCLUSÃO': { color: '#991b1b', bg: '#fee2e2', border: '#fecaca', icon: 'pi pi-times-circle', label: 'Exclusão' },
+};
+
+const FIELD_LABELS: Record<string, string> = {
+  id: 'ID',
+  nome: 'Nome',
+  email: 'E-mail',
+  status: 'Status',
+  descricao: 'Descrição',
+  criadoPor: 'Criado por',
+  modificadoPor: 'Modificado por',
+  registro: 'Data de criação',
+  ultimaModificacao: 'Última modificação',
 };
 
 function HistoryDialog({ visible, onHide, entityId, servicePath, title = 'Histórico de Alterações' }: HistoryDialogProps) {
@@ -35,10 +46,12 @@ function HistoryDialog({ visible, onHide, entityId, servicePath, title = 'Histó
     if (visible && entityId) {
       setLoading(true);
       const service = new BaseService(servicePath);
-      service.getById(`${entityId}/historico`)
-        .then((data) => setHistorico(data as unknown as AuditoriaItem[]))
+      service.getHistorico(entityId)
+        .then((data) => setHistorico(data as AuditoriaItem[]))
         .catch(() => setHistorico([]))
         .finally(() => setLoading(false));
+    } else {
+      setHistorico([]);
     }
   }, [visible, entityId, servicePath]);
 
@@ -53,25 +66,21 @@ function HistoryDialog({ visible, onHide, entityId, servicePath, title = 'Histó
     return d.toLocaleDateString('pt-BR') + ' ' + d.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   };
 
-  const FIELD_LABELS: Record<string, string> = {
-    nome: 'Nome',
-    email: 'E-mail',
-    status: 'Status',
-    descricao: 'Descrição',
-  };
-
   const customContent = (item: AuditoriaItem) => {
     const config = OPERATION_CONFIG[item.tipoOperacao] || OPERATION_CONFIG['ALTERAÇÃO'];
 
     return (
       <div className="history-item">
         <div className="history-header">
-          <Tag value={item.tipoOperacao} severity={config.severity} icon={config.icon} />
+          <span className="history-tag" style={{ color: config.color, background: config.bg, borderColor: config.border }}>
+            <i className={config.icon} />
+            {config.label}
+          </span>
           <span className="history-date">{formatDate(item.data)}</span>
         </div>
         <div className="history-user">
           <i className="pi pi-user" />
-          <span>{item.usuario}</span>
+          <span>{item.usuario || 'sistema'}</span>
         </div>
         {item.dados && Object.keys(item.dados).length > 0 && (
           <div className="history-data">
@@ -87,15 +96,16 @@ function HistoryDialog({ visible, onHide, entityId, servicePath, title = 'Histó
     );
   };
 
+  const MARKER_COLORS: Record<string, string> = {
+    'CRIAÇÃO': '#22c55e',
+    'ALTERAÇÃO': '#3b82f6',
+    'EXCLUSÃO': '#ef4444',
+  };
+
   const marker = (item: AuditoriaItem) => {
     const config = OPERATION_CONFIG[item.tipoOperacao] || OPERATION_CONFIG['ALTERAÇÃO'];
-    const colors: Record<string, string> = {
-      success: '#22c55e',
-      info: '#3b82f6',
-      danger: '#ef4444',
-    };
     return (
-      <span className="history-marker" style={{ background: colors[config.severity] }}>
+      <span className="history-marker" style={{ background: MARKER_COLORS[item.tipoOperacao] || '#3b82f6' }}>
         <i className={config.icon} />
       </span>
     );

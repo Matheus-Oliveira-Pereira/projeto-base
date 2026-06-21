@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Card } from 'primereact/card';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import BaseService from '../../services/baseService';
 import './styles.scss';
@@ -17,20 +18,23 @@ interface StatCard {
 
 function Dashboard() {
   const { user } = useAuth();
-  const [stats, setStats] = useState({ usuarios: 0, perfis: 0 });
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    Promise.all([
-      usuarioService.getAll().catch(() => []),
-      perfilService.getAll().catch(() => []),
-    ]).then(([usuarios, perfis]) => {
-      setStats({ usuarios: usuarios.length || 0, perfis: perfis.length || 0 });
-    });
-  }, []);
+  const { data: usuarios = [] } = useQuery({
+    queryKey: ['dashboard-usuarios'],
+    queryFn: () => usuarioService.getAll().catch(() => []),
+    staleTime: 30 * 1000,
+  });
+
+  const { data: perfis = [] } = useQuery({
+    queryKey: ['dashboard-perfis'],
+    queryFn: () => perfilService.getAll().catch(() => []),
+    staleTime: 30 * 1000,
+  });
 
   const cards: StatCard[] = [
-    { title: 'Usuários', value: stats.usuarios, icon: 'pi pi-users', color: '#3b82f6', bg: 'linear-gradient(135deg, #3b82f6, #6366f1)' },
-    { title: 'Perfis', value: stats.perfis, icon: 'pi pi-shield', color: '#8b5cf6', bg: 'linear-gradient(135deg, #8b5cf6, #a855f7)' },
+    { title: 'Usuários', value: usuarios.length, icon: 'pi pi-users', color: '#3b82f6', bg: 'linear-gradient(135deg, #3b82f6, #6366f1)' },
+    { title: 'Perfis', value: perfis.length, icon: 'pi pi-shield', color: '#8b5cf6', bg: 'linear-gradient(135deg, #8b5cf6, #a855f7)' },
     { title: 'Roles', value: 8, icon: 'pi pi-key', color: '#f59e0b', bg: 'linear-gradient(135deg, #f59e0b, #f97316)' },
     { title: 'Status', value: 'Online', icon: 'pi pi-check-circle', color: '#22c55e', bg: 'linear-gradient(135deg, #22c55e, #10b981)' },
   ];
@@ -60,8 +64,8 @@ function Dashboard() {
         <Card className="content-card">
           <div className="card-header-custom"><h3>Acesso Rápido</h3></div>
           <div className="quick-links">
-            <a href="/usuarios" className="quick-link"><i className="pi pi-user-plus" /><span>Novo Usuário</span></a>
-            <a href="/perfis" className="quick-link"><i className="pi pi-shield" /><span>Gerenciar Perfis</span></a>
+            <button type="button" className="quick-link" onClick={() => navigate('/usuarios', { state: { abrirNovo: true } })}><i className="pi pi-user-plus" /><span>Novo Usuário</span></button>
+            <button type="button" className="quick-link" onClick={() => navigate('/perfis')}><i className="pi pi-shield" /><span>Gerenciar Perfis</span></button>
           </div>
         </Card>
 

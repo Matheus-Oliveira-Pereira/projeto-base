@@ -1,6 +1,7 @@
 package br.com.matheus.base.configuracoes;
 
 import br.com.matheus.base.exceptions.EntidadeNaoEncontradaException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.AuthenticationException;
@@ -48,6 +49,25 @@ public class GlobalExceptionHandler {
         body.put("error", "Não Autorizado");
         body.put("message", ex.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(body);
+    }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<Map<String, Object>> handleDataIntegrity(DataIntegrityViolationException ex) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("timestamp", LocalDateTime.now());
+        body.put("status", HttpStatus.CONFLICT.value());
+        body.put("error", "Conflito");
+
+        String rootMsg = ex.getMostSpecificCause().getMessage();
+        if (rootMsg != null && rootMsg.toLowerCase().contains("email")) {
+            body.put("message", "Já existe um registro com este e-mail");
+        } else if (rootMsg != null && rootMsg.toLowerCase().contains("descricao")) {
+            body.put("message", "Já existe um registro com esta descrição");
+        } else {
+            body.put("message", "Registro duplicado. Já existe um registro com os mesmos dados únicos");
+        }
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
     }
 
     @ExceptionHandler(Exception.class)

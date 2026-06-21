@@ -1,5 +1,13 @@
 import api from './api';
 
+export interface PaginatedResponse<T> {
+  content: T[];
+  page: number;
+  size: number;
+  totalElements: number;
+  totalPages: number;
+}
+
 class BaseService<T = unknown> {
   private resourcePath: string;
 
@@ -9,6 +17,12 @@ class BaseService<T = unknown> {
 
   async getAll(params: Record<string, unknown> = {}): Promise<T[]> {
     const response = await api.get<T[]>(this.resourcePath, { params });
+    return response.data;
+  }
+
+  async getPage(queryParams: string[] = []): Promise<PaginatedResponse<T>> {
+    const queryString = queryParams.length ? '?' + queryParams.join('&') : '';
+    const response = await api.get<PaginatedResponse<T>>(this.resourcePath + '/listar' + queryString);
     return response.data;
   }
 
@@ -29,6 +43,19 @@ class BaseService<T = unknown> {
 
   async remove(id: string): Promise<void> {
     await api.delete(`${this.resourcePath}/${id}`);
+  }
+
+  async desativar(id: string): Promise<void> {
+    await api.patch(`${this.resourcePath}/${id}/desativar`);
+  }
+
+  async restaurar(id: string): Promise<void> {
+    await api.patch(`${this.resourcePath}/${id}/restaurar`);
+  }
+
+  async getHistorico(id: string): Promise<unknown[]> {
+    const response = await api.get<unknown[]>(`${this.resourcePath}/${id}/historico`);
+    return response.data;
   }
 }
 

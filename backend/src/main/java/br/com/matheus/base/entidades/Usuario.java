@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Usuario extends Entidade implements UserDetails {
+public class Usuario extends Entidade implements UserDetails, br.com.matheus.base.interfaces.Desativavel {
 
     @NotBlank(message = "Nome é obrigatório")
     private String nome;
@@ -62,6 +62,7 @@ public class Usuario extends Entidade implements UserDetails {
             joinColumns = @JoinColumn(name = "usuario_id"),
             inverseJoinColumns = @JoinColumn(name = "perfil_id")
     )
+    @org.hibernate.envers.NotAudited
     private Set<Perfil> perfis = new HashSet<>();
 
     @PrePersist
@@ -70,6 +71,16 @@ public class Usuario extends Entidade implements UserDetails {
         if (senha != null && !senha.startsWith("$2a$") && !senha.startsWith("$2b$")) {
             senha = new BCryptPasswordEncoder().encode(senha);
         }
+    }
+
+    @Override
+    public void desativar() {
+        this.status = StatusUsuario.INATIVO;
+    }
+
+    @Override
+    public void restaurar() {
+        this.status = StatusUsuario.ATIVO;
     }
 
     @Override

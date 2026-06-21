@@ -3,6 +3,7 @@ package br.com.matheus.base.servicos;
 import br.com.matheus.base.entidades.superclasses.Entidade;
 import br.com.matheus.base.exceptions.EntidadeNaoEncontradaException;
 import br.com.matheus.base.repositorios.EntidadeRepository;
+import br.com.matheus.base.interfaces.Desativavel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -25,6 +26,22 @@ public abstract class EntidadeService<T extends Entidade, R extends EntidadeRepo
 
     public T salvar(T entidade) {
         return repository.save(entidade);
+    }
+
+    public void desativar(UUID id) {
+        T entidade = buscar(id);
+        if (entidade instanceof Desativavel desativavel) {
+            desativavel.desativar();
+            repository.save(entidade);
+        }
+    }
+
+    public void restaurar(UUID id) {
+        T entidade = buscar(id);
+        if (entidade instanceof Desativavel desativavel) {
+            desativavel.restaurar();
+            repository.save(entidade);
+        }
     }
 
     public void excluir(UUID id) {

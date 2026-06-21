@@ -35,6 +35,21 @@
     gap: 0.75rem;
     margin-bottom: 0.4rem;
 
+    .history-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      border: 1px solid;
+      text-transform: uppercase;
+
+      i { font-size: 0.7rem; }
+    }
+
     .history-date {
       font-size: 0.75rem;
       color: $gray-400;

@@ -2,6 +2,7 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { queryClient } from './utils/query-clients/queryClient';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { WebSocketProvider } from './contexts/WebSocketContext';
 import Rotas from './routes/Rotas';
 import './App.scss';
 
@@ -10,7 +11,9 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
-          <Rotas />
+          <WebSocketProvider>
+            <Rotas />
+          </WebSocketProvider>
         </AuthProvider>
       </ThemeProvider>
     </QueryClientProvider>
